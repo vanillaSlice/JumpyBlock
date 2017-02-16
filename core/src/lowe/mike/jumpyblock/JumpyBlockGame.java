@@ -14,7 +14,7 @@ import lowe.mike.jumpyblock.screen.ScreenManager;
 public final class JumpyBlockGame extends Game {
 
     public static final String TITLE = "Jumpy Block";
-    public static final int WIDTH = 480;
+    public static final int WIDTH = 360;
     public static final int HEIGHT = 640;
 
     private Assets assets;
@@ -31,7 +31,7 @@ public final class JumpyBlockGame extends Game {
 
     private void initialiseAssets() {
         assets = new Assets();
-        assets.loadGlobalAssets();
+        assets.load();
     }
 
     private void initialiseScreenManager() {
@@ -54,7 +54,7 @@ public final class JumpyBlockGame extends Game {
 
     @Override
     public void dispose() {
-        assets.disposeGlobalAssets();
+        assets.dispose();
         spriteBatch.dispose();
         screenManager.dispose();
     }

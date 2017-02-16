@@ -2,10 +2,7 @@ package lowe.mike.jumpyblock.screen;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import lowe.mike.jumpyblock.Assets;
 
@@ -16,94 +13,65 @@ import lowe.mike.jumpyblock.Assets;
  */
 public final class MainMenuScreen extends AbstractScreen {
 
-    private static final float SPACING = 50f;
+    private static final int TITLE_LABEL_FONT_SIZE = 56;
+    private static final String TITLE_LABEL_TEXT = "Jumpy\nBlock";
+    private static final int MESSAGE_LABEL_FONT_SIZE = 28;
+    private static final String MESSAGE_LABEL_TEXT = "Tap to play";
+    private static final int SPACING = 50;
 
-    private final Image title;
-    private final ImageButton playButton;
+    private final Label titleLabel;
+    private final Label messageLabel;
 
     /**
      * Creates a new {@code MainMenuScreen} given a {@link ScreenManager}, {@link Assets}
      * and a {@link SpriteBatch}.
      *
-     * @param screenManager the {@link ScreenManager} used to manager game {@link Screen}s
+     * @param screenManager the {@link ScreenManager} used to manage game {@link Screen}s
      * @param assets        {@link Assets} containing assets used in the {@link Screen}
      * @param spriteBatch   {@link SpriteBatch} to add sprites to
      */
     public MainMenuScreen(ScreenManager screenManager, Assets assets, SpriteBatch spriteBatch) {
         super(screenManager, assets, spriteBatch);
-        assets.loadMainMenuScreenAssets();
-        this.title = new Image(assets.titleTexture);
-        this.playButton = initialisePlayButton();
-        this.stage.addActor(this.title);
-        this.stage.addActor(this.playButton);
-    }
-
-    private ImageButton initialisePlayButton() {
-        ImageButton playButton = new ImageButton(getPlayButtonStyle());
-        addPlayButtonListener(playButton);
-        return playButton;
-    }
-
-    private ImageButton.ImageButtonStyle getPlayButtonStyle() {
-        ImageButton.ImageButtonStyle playButtonStyle = new ImageButton.ImageButtonStyle();
-        playButtonStyle.imageUp = getDrawableFromTexture(assets.playButtonUpTexture);
-        playButtonStyle.imageOver = getDrawableFromTexture(assets.playButtonOverTexture);
-        playButtonStyle.imageDown = playButtonStyle.imageOver;
-        return playButtonStyle;
-    }
-
-    private void addPlayButtonListener(ImageButton playButton) {
-        playButton.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                switchToGameScreen();
-            }
-
-        });
-    }
-
-    private void switchToGameScreen() {
-        screenManager.setScreen(new GameScreen(screenManager, assets, spriteBatch));
+        this.titleLabel = initialiseLabel(TITLE_LABEL_FONT_SIZE, TITLE_LABEL_TEXT);
+        this.messageLabel = initialiseLabel(MESSAGE_LABEL_FONT_SIZE, MESSAGE_LABEL_TEXT);
+        this.stage.addActor(this.titleLabel);
+        this.stage.addActor(this.messageLabel);
     }
 
     @Override
     void handleUserInput() {
-        if (isSpaceJustPressed()) {
+        if (isJustTouched() || isSpaceJustPressed()) {
             switchToGameScreen();
         }
     }
 
+    private void switchToGameScreen() {
+        GameScreen gameScreen = new GameScreen(screenManager, assets, spriteBatch);
+        screenManager.setScreen(gameScreen);
+    }
+
     @Override
     void update(float delta) {
-        updateTitlePosition();
-        updateButtonPosition();
+        updateTitleLabelPosition();
+        updateMessageLabelPosition();
     }
 
-    private void updateTitlePosition() {
-        // center
-        float x = (viewport.getWorldWidth() - title.getWidth()) * .5f;
-        // two thirds of the way up the screen
-        float y = (viewport.getWorldHeight() - title.getHeight()) * .666f;
-        title.setPosition(x, y);
+    /*
+     * Center the label two thirds of the way up the screen.
+     */
+    private void updateTitleLabelPosition() {
+        float x = (viewport.getWorldWidth() - titleLabel.getWidth()) * .5f;
+        float y = (viewport.getWorldHeight() - titleLabel.getHeight()) * .666f;
+        titleLabel.setPosition(x, y);
     }
 
-    private void updateButtonPosition() {
-        // center
-        float x = (viewport.getWorldWidth() - playButton.getWidth()) * .5f;
-        // underneath the title
-        float y = title.getY() - playButton.getHeight() - SPACING;
-        playButton.setPosition(x, y);
-    }
-
-    @Override
-    void disposeAssets() {
-        assets.diposeMainMenuScreenAssets();
+    /*
+     * Center the button just underneath the title label.
+     */
+    private void updateMessageLabelPosition() {
+        float x = (viewport.getWorldWidth() - messageLabel.getWidth()) * .5f;
+        float y = titleLabel.getY() - messageLabel.getHeight() - SPACING;
+        messageLabel.setPosition(x, y);
     }
 
 }

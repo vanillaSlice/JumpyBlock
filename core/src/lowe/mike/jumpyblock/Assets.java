@@ -2,11 +2,16 @@ package lowe.mike.jumpyblock;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 
-import lowe.mike.jumpyblock.screen.GameScreen;
-import lowe.mike.jumpyblock.screen.MainMenuScreen;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * {@code Assets} provides access to assets, such as {@link Texture}s,
@@ -16,99 +21,81 @@ import lowe.mike.jumpyblock.screen.MainMenuScreen;
  */
 public final class Assets {
 
-    // global
     private static final AssetDescriptor<Music> MUSIC_ASSET_DESCRIPTOR
             = new AssetDescriptor<Music>("music.mp3", Music.class);
-    private static final float MUSIC_VOLUME = 0.2f;
-
-    // main menu screen
-    private static final AssetDescriptor<Texture> TITLE_TEXTURE_ASSET_DESCRIPTOR
-            = new AssetDescriptor<Texture>("title.png", Texture.class);
-    private static final AssetDescriptor<Texture> PLAY_BUTTON_UP_TEXTURE_ASSET_DESCRIPTOR
-            = new AssetDescriptor<Texture>("play-button-up.png", Texture.class);
-    private static final AssetDescriptor<Texture> PLAY_BUTTON_OVER_TEXTURE_ASSET_DESCRIPTOR
-            = new AssetDescriptor<Texture>("play-button-over.png", Texture.class);
-
-    // game screen
+    private static final AssetDescriptor<FreeTypeFontGenerator> FONT_GENERATOR_ASSET_DESCRIPTOR
+            = new AssetDescriptor<FreeTypeFontGenerator>("font.ttf", FreeTypeFontGenerator.class);
     private static final AssetDescriptor<Texture> BLOCK_TEXTURE_ASSET_DESCRIPTOR
             = new AssetDescriptor<Texture>("block.png", Texture.class);
+    private static final AssetDescriptor<Texture> GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR
+            = new AssetDescriptor<Texture>("ground-section.png", Texture.class);
+    private static final AssetDescriptor<Texture> WALL_TEXTURE_ASSET_DESCRIPTOR
+            = new AssetDescriptor<Texture>("wall.png", Texture.class);
 
+    private static final float MUSIC_VOLUME = .2f;
+    private static final FreeTypeFontGenerator.FreeTypeFontParameter FONT_PARAMETER = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-    // global assets
+    static {
+        FONT_PARAMETER.color = Color.BLACK;
+        FONT_PARAMETER.borderWidth = 3f;
+        FONT_PARAMETER.borderColor = Color.GREEN;
+    }
+
     public Music music;
-
-    // main menu screen assets
-    public Texture titleTexture;
-    public Texture playButtonUpTexture;
-    public Texture playButtonOverTexture;
-
-    // game screen assets
+    public FreeTypeFontGenerator fontGenerator;
     public Texture blockTexture;
+    public Texture groundSectionTexture;
+    public Texture wallTexture;
 
     private final AssetManager assetManager = new AssetManager();
+    private final FreeTypeFontGeneratorLoader loader = new FreeTypeFontGeneratorLoader(new InternalFileHandleResolver());
+    private final Map<Integer, BitmapFont> fonts = new HashMap<Integer, BitmapFont>();
 
     /**
      * Load assets used throughout the game.
      */
-    public void loadGlobalAssets() {
-        loadAssets(MUSIC_ASSET_DESCRIPTOR);
+    public void load() {
+        // use asset manager to load in assets
+        assetManager.setLoader(FreeTypeFontGenerator.class, loader);
+        assetManager.load(MUSIC_ASSET_DESCRIPTOR);
+        assetManager.load(FONT_GENERATOR_ASSET_DESCRIPTOR);
+        assetManager.load(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
+        assetManager.load(GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR);
+        assetManager.load(WALL_TEXTURE_ASSET_DESCRIPTOR);
+
+        // wait for asset manager to finish loading
+        assetManager.finishLoading();
+
+        // assign loaded assets to variables
         music = assetManager.get(MUSIC_ASSET_DESCRIPTOR);
         music.setVolume(MUSIC_VOLUME);
         music.setLooping(true);
-    }
-
-    private void loadAssets(AssetDescriptor<?>... assetDescriptors) {
-        for (AssetDescriptor<?> assetDescriptor : assetDescriptors) {
-            assetManager.load(assetDescriptor);
-        }
-        assetManager.finishLoading();
-    }
-
-    /**
-     * Dispose all global assets.
-     */
-    public void disposeGlobalAssets() {
-        unloadAssets(MUSIC_ASSET_DESCRIPTOR);
-    }
-
-    private void unloadAssets(AssetDescriptor<?>... assetDescriptors) {
-        for (AssetDescriptor<?> assetDescriptor : assetDescriptors) {
-            assetManager.unload(assetDescriptor.fileName);
-        }
-    }
-
-    /**
-     * Load assets used by the {@link MainMenuScreen}.
-     */
-    public void loadMainMenuScreenAssets() {
-        loadAssets(TITLE_TEXTURE_ASSET_DESCRIPTOR, PLAY_BUTTON_UP_TEXTURE_ASSET_DESCRIPTOR,
-                PLAY_BUTTON_OVER_TEXTURE_ASSET_DESCRIPTOR);
-        titleTexture = assetManager.get(TITLE_TEXTURE_ASSET_DESCRIPTOR);
-        playButtonUpTexture = assetManager.get(PLAY_BUTTON_UP_TEXTURE_ASSET_DESCRIPTOR);
-        playButtonOverTexture = assetManager.get(PLAY_BUTTON_OVER_TEXTURE_ASSET_DESCRIPTOR);
-    }
-
-    /**
-     * Dispose assets used by the {@link MainMenuScreen}.
-     */
-    public void diposeMainMenuScreenAssets() {
-        unloadAssets(TITLE_TEXTURE_ASSET_DESCRIPTOR, PLAY_BUTTON_UP_TEXTURE_ASSET_DESCRIPTOR,
-                PLAY_BUTTON_OVER_TEXTURE_ASSET_DESCRIPTOR);
-    }
-
-    /**
-     * Load assets used by the {@link GameScreen}.
-     */
-    public void loadGameScreenAssets() {
-        loadAssets(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
+        fontGenerator = assetManager.get(FONT_GENERATOR_ASSET_DESCRIPTOR);
         blockTexture = assetManager.get(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
+        groundSectionTexture = assetManager.get(GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR);
+        wallTexture = assetManager.get(WALL_TEXTURE_ASSET_DESCRIPTOR);
     }
 
     /**
-     * Dispose assets used by the {@link GameScreen}.
+     * @param size size of the font to generate
+     * @return a {@link BitmapFont}
      */
-    public void disposeGameScreenAssets() {
-        unloadAssets(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
+    public BitmapFont generateFont(int size) {
+        // use cached version if it exists
+        if (fonts.containsKey(size)) {
+            return fonts.get(size);
+        }
+        FONT_PARAMETER.size = size;
+        BitmapFont font = fontGenerator.generateFont(FONT_PARAMETER);
+        fonts.put(size, font);
+        return font;
+    }
+
+    /**
+     * Dispose all assets.
+     */
+    public void dispose() {
+        assetManager.dispose();
     }
 
 }

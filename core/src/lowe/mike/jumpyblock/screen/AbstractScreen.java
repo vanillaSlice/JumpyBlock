@@ -6,12 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -38,7 +36,7 @@ abstract class AbstractScreen extends ScreenAdapter {
      * Creates a new {@code AbstractScreen} given a {@link ScreenManager}, {@link Assets}
      * and a {@link SpriteBatch}.
      *
-     * @param screenManager the {@link ScreenManager} used to manager game {@link Screen}s
+     * @param screenManager the {@link ScreenManager} used to manage game {@link Screen}s
      * @param assets        {@link Assets} containing assets used in the {@link Screen}
      * @param spriteBatch   {@link SpriteBatch} to add sprites to
      */
@@ -47,17 +45,34 @@ abstract class AbstractScreen extends ScreenAdapter {
         this.assets = assets;
         this.spriteBatch = spriteBatch;
         this.camera.setToOrtho(false);
-        this.viewport = new ExtendViewport(JumpyBlockGame.WIDTH, JumpyBlockGame.HEIGHT, this.camera);
+        this.viewport = new ExtendViewport(JumpyBlockGame.WIDTH, JumpyBlockGame.HEIGHT, 0, JumpyBlockGame.HEIGHT, this.camera);
         this.stage = new Stage(this.viewport, this.spriteBatch);
         Gdx.input.setInputProcessor(this.stage);
     }
 
     /**
-     * @param texture the {@link Texture} to create a {@link Drawable} from
-     * @return a {@link Drawable}
+     * Creates a {@link Label} with the given font size.
+     *
+     * @param fontSize size of {@link Label} font
+     * @return the {@link Label}
      */
-    final Drawable getDrawableFromTexture(Texture texture) {
-        return new TextureRegionDrawable(new TextureRegion(texture));
+    final Label initialiseLabel(int fontSize) {
+        return initialiseLabel(fontSize, null);
+    }
+
+    /**
+     * Creates a {@link Label} with the given font size and text.
+     *
+     * @param fontSize size of {@link Label} font
+     * @param text     text to initialise {@link Label} with
+     * @return the {@link Label}
+     */
+    final Label initialiseLabel(int fontSize, String text) {
+        Label.LabelStyle style = new Label.LabelStyle();
+        style.font = assets.generateFont(fontSize);
+        Label label = new Label(text, style);
+        label.setAlignment(Align.center);
+        return label;
     }
 
     @Override
@@ -77,8 +92,9 @@ abstract class AbstractScreen extends ScreenAdapter {
 
     @Override
     public final void render(float delta) {
-        if (isPaused)
+        if (isPaused) {
             return;
+        }
         handleUserInput();
         clearScreen();
         update(delta);
@@ -121,12 +137,6 @@ abstract class AbstractScreen extends ScreenAdapter {
     @Override
     public final void dispose() {
         stage.dispose();
-        disposeAssets();
     }
-
-    /**
-     * Subclasses should select what to dispose from {@link Assets}.
-     */
-    abstract void disposeAssets();
 
 }
