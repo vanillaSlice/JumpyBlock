@@ -42,6 +42,7 @@ final class GameScreen extends AbstractScreen {
     private static final String GAME_OVER_BEST_LABEL_TEXT = "Best  %d";
     private static final int REPLAY_LABEL_FONT_SIZE = 24;
     private static final String REPLAY_LABEL_TEXT = "Tap to replay";
+    private static final int LABEL_SPACING = 30;
 
     private final Preferences preferences;
     private int best;
@@ -240,7 +241,7 @@ final class GameScreen extends AbstractScreen {
         int y = (int) (block.getY() + (block.velocity.y * delta));
 
         // don't let block go through the ceiling
-        int ceiling = (int) (JumpyBlockGame.HEIGHT - block.getHeight());
+        int ceiling = (int) (camera.viewportHeight - block.getHeight());
         if (y > ceiling) {
             y = ceiling;
         }
@@ -341,7 +342,6 @@ final class GameScreen extends AbstractScreen {
         }
     }
 
-    // DONE UP TO HERE
     private void updateLabels() {
         if (gameOver) {
             scoreLabel.setVisible(false);
@@ -364,19 +364,25 @@ final class GameScreen extends AbstractScreen {
     private void updateGameOverScoreLabel() {
         gameOverScoreLabel.setText(String.format(GAME_OVER_SCORE_LABEL_TEXT, score));
         gameOverScoreLabel.pack();
-        gameOverScoreLabel.setPosition(camera.position.x - (gameOverScoreLabel.getWidth() * .5f), gameOverLabel.getY() - gameOverScoreLabel.getHeight() - 30f);
+        float x = camera.position.x - (gameOverScoreLabel.getWidth() * .5f);
+        float y = gameOverLabel.getY() - gameOverScoreLabel.getHeight() - LABEL_SPACING;
+        gameOverScoreLabel.setPosition(x, y);
         gameOverScoreLabel.setVisible(true);
     }
 
     private void updateGameOverBestLabel() {
         gameOverBestLabel.setText(String.format(GAME_OVER_BEST_LABEL_TEXT, best));
         gameOverBestLabel.pack();
-        gameOverBestLabel.setPosition(camera.position.x - (gameOverBestLabel.getWidth() * .5f), gameOverScoreLabel.getY() - gameOverBestLabel.getHeight() - 30f);
+        float x = camera.position.x - (gameOverBestLabel.getWidth() * .5f);
+        float y = gameOverScoreLabel.getY() - gameOverBestLabel.getHeight() - LABEL_SPACING;
+        gameOverBestLabel.setPosition(x, y);
         gameOverBestLabel.setVisible(true);
     }
 
     private void updateReplayLabel() {
-        replayLabel.setPosition(camera.position.x - (replayLabel.getWidth() * .5f), gameOverBestLabel.getY() - replayLabel.getHeight() - 30f);
+        float x = camera.position.x - (replayLabel.getWidth() * .5f);
+        float y = gameOverBestLabel.getY() - replayLabel.getHeight() - LABEL_SPACING;
+        replayLabel.setPosition(x, y);
         replayLabel.setVisible(true);
     }
 
