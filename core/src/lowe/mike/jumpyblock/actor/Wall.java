@@ -18,11 +18,11 @@ public final class Wall extends Group {
     public final Rectangle topWallBounds = new Rectangle();
     public final Rectangle bottomWallBounds = new Rectangle();
     public final Rectangle scoreBounds = new Rectangle();
+    public boolean isPassed;
 
     private final Texture texture;
     private final Actor topWall;
     private final Actor bottomWall;
-    private boolean isPassed;
 
     /**
      * Creates a new {@code Wall} instance given a {@link Texture}.
@@ -32,32 +32,47 @@ public final class Wall extends Group {
     public Wall(Texture texture) {
         this.texture = texture;
         this.topWall = new Image(this.texture);
+        this.topWallBounds.setSize(this.topWall.getWidth(), this.topWall.getHeight());
         this.bottomWall = new Image(this.texture);
+        this.bottomWallBounds.setSize(this.bottomWall.getWidth(), this.bottomWall.getHeight());
+        this.scoreBounds.setHeight(SPACING);
         addActor(this.topWall);
         addActor(this.bottomWall);
+        setWidth(this.texture.getWidth());
+        setHeight(this.texture.getHeight() * 2 + SPACING);
     }
 
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        topWall.setPosition(bottomWall.getX(), bottomWall.getY() + bottomWall.getHeight() + SPACING);
-        topWallBounds.set(x, y + topWall.getHeight() + SPACING, topWall.getWidth(), topWall.getHeight());
-        bottomWallBounds.set(x, y, bottomWall.getWidth(), bottomWall.getHeight());
-        scoreBounds.set(x + bottomWall.getWidth(), y + bottomWall.getHeight(), 0, SPACING);
+        updateTopWallPosition();
+        updateTopWallBounds();
+        updateBottomWallBounds();
+        updateScoreBounds();
     }
 
-    /**
-     * Sets if this {@code Wall} has been passed.
-     *
-     * @param isPassed if this {@code Wall} has been passed
-     * @return {@code true} if the value is changed; {@code false} otherwise
-     */
-    public boolean setPassed(boolean isPassed) {
-        if (this.isPassed == isPassed) {
-            return false;
-        }
-        this.isPassed = isPassed;
-        return true;
+    private void updateTopWallPosition() {
+        float x = bottomWall.getX();
+        float y = bottomWall.getY() + bottomWall.getHeight() + SPACING;
+        topWall.setPosition(x, y);
+    }
+
+    private void updateTopWallBounds() {
+        float x = getX();
+        float y = getY() + bottomWall.getHeight() + SPACING;
+        topWallBounds.setPosition(x, y);
+    }
+
+    private void updateBottomWallBounds() {
+        float x = getX();
+        float y = getY();
+        bottomWallBounds.setPosition(x, y);
+    }
+
+    private void updateScoreBounds() {
+        float x = getX() + bottomWall.getWidth();
+        float y = getY() + bottomWall.getHeight();
+        scoreBounds.setPosition(x, y);
     }
 
 }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
  * {@code GroundSection} instances are drawn across the ground of the
- * world. Multiple instances are created to cover the entire ground.
+ * world.
  *
  * @author Mike Lowe
  */
@@ -21,12 +21,13 @@ public final class GroundSection extends Image {
      */
     public GroundSection(Texture texture) {
         super(texture);
+        this.bounds.setSize(getWidth(), getHeight());
     }
 
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        bounds.set(getX(), getY(), getWidth(), getHeight());
+        bounds.setPosition(x, y);
     }
 
 }

@@ -33,7 +33,8 @@ public final class Assets {
             = new AssetDescriptor<Texture>("wall.png", Texture.class);
 
     private static final float MUSIC_VOLUME = .2f;
-    private static final FreeTypeFontGenerator.FreeTypeFontParameter FONT_PARAMETER = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    private static final FreeTypeFontGenerator.FreeTypeFontParameter FONT_PARAMETER
+            = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
     static {
         FONT_PARAMETER.color = Color.BLACK;
@@ -41,39 +42,41 @@ public final class Assets {
         FONT_PARAMETER.borderColor = Color.GREEN;
     }
 
-    public Music music;
-    public FreeTypeFontGenerator fontGenerator;
-    public Texture blockTexture;
-    public Texture groundSectionTexture;
-    public Texture wallTexture;
+    public final Music music;
+    public final Texture blockTexture;
+    public final Texture groundSectionTexture;
+    public final Texture wallTexture;
 
     private final AssetManager assetManager = new AssetManager();
-    private final FreeTypeFontGeneratorLoader loader = new FreeTypeFontGeneratorLoader(new InternalFileHandleResolver());
+    private final FreeTypeFontGeneratorLoader loader
+            = new FreeTypeFontGeneratorLoader(new InternalFileHandleResolver());
+    private final FreeTypeFontGenerator fontGenerator;
     private final Map<Integer, BitmapFont> fonts = new HashMap<Integer, BitmapFont>();
 
     /**
-     * Load assets used throughout the game.
+     * Creates a new {@code Assets} instance and loads the assets
+     * used throughout the game.
      */
-    public void load() {
+    public Assets() {
         // use asset manager to load in assets
-        assetManager.setLoader(FreeTypeFontGenerator.class, loader);
-        assetManager.load(MUSIC_ASSET_DESCRIPTOR);
-        assetManager.load(FONT_GENERATOR_ASSET_DESCRIPTOR);
-        assetManager.load(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
-        assetManager.load(GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR);
-        assetManager.load(WALL_TEXTURE_ASSET_DESCRIPTOR);
+        this.assetManager.setLoader(FreeTypeFontGenerator.class, this.loader);
+        this.assetManager.load(MUSIC_ASSET_DESCRIPTOR);
+        this.assetManager.load(FONT_GENERATOR_ASSET_DESCRIPTOR);
+        this.assetManager.load(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
+        this.assetManager.load(GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR);
+        this.assetManager.load(WALL_TEXTURE_ASSET_DESCRIPTOR);
 
         // wait for asset manager to finish loading
-        assetManager.finishLoading();
+        this.assetManager.finishLoading();
 
         // assign loaded assets to variables
-        music = assetManager.get(MUSIC_ASSET_DESCRIPTOR);
-        music.setVolume(MUSIC_VOLUME);
-        music.setLooping(true);
-        fontGenerator = assetManager.get(FONT_GENERATOR_ASSET_DESCRIPTOR);
-        blockTexture = assetManager.get(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
-        groundSectionTexture = assetManager.get(GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR);
-        wallTexture = assetManager.get(WALL_TEXTURE_ASSET_DESCRIPTOR);
+        this.music = this.assetManager.get(MUSIC_ASSET_DESCRIPTOR);
+        this.music.setVolume(MUSIC_VOLUME);
+        this.music.setLooping(true);
+        this.fontGenerator = this.assetManager.get(FONT_GENERATOR_ASSET_DESCRIPTOR);
+        this.blockTexture = this.assetManager.get(BLOCK_TEXTURE_ASSET_DESCRIPTOR);
+        this.groundSectionTexture = this.assetManager.get(GROUND_SECTION_TEXTURE_ASSET_DESCRIPTOR);
+        this.wallTexture = this.assetManager.get(WALL_TEXTURE_ASSET_DESCRIPTOR);
     }
 
     /**

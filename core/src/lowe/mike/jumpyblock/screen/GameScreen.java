@@ -27,8 +27,11 @@ final class GameScreen extends AbstractScreen {
     private static final String BEST_PREFERENCES_KEY = "best";
     private static final int SCORE_LABEL_FONT_SIZE = 36;
     private static final int SCORE_LABEL_Y_OFFSET = 50;
+    private static final int GRAVITY = -25;
     private static final Vector2 BLOCK_STARTING_POSITION = new Vector2(50, 400);
     private static final int FIRST_WALL_X_POSITION = 400;
+    private static final int MAXIMUM_WALL_Y_POSITION = -200;
+    private static final int MINIMUM_WALL_Y_POSITION = -500;
     private static final int WALL_SPACING = 250;
     private static final Random RANDOM = new Random();
     private static final int GAME_OVER_LABEL_FONT_SIZE = 32;
@@ -66,7 +69,7 @@ final class GameScreen extends AbstractScreen {
         this.preferences = Gdx.app.getPreferences(JumpyBlockGame.TITLE);
         this.best = this.preferences.getInteger(BEST_PREFERENCES_KEY);
         this.scoreLabel = initialiseLabel(SCORE_LABEL_FONT_SIZE);
-        this.block = new Block(assets.blockTexture, BLOCK_STARTING_POSITION);
+        this.block = new Block(assets.blockTexture);
         this.gameOverLabel = initialiseLabel(GAME_OVER_LABEL_FONT_SIZE, GAME_OVER_LABEL_TEXT);
         this.gameOverScoreLabel = initialiseLabel(GAME_OVER_SCORE_LABEL_FONT_SIZE);
         this.gameOverBestLabel = initialiseLabel(GAME_OVER_BEST_LABEL_FONT_SIZE);
@@ -85,7 +88,7 @@ final class GameScreen extends AbstractScreen {
     private void startNewGame() {
         score = 0;
         scoreLabel.setVisible(true);
-        block.reset();
+        resetBlock();
         resetGround();
         resetWalls();
         gameOverLabel.setVisible(false);
@@ -93,6 +96,17 @@ final class GameScreen extends AbstractScreen {
         gameOverBestLabel.setVisible(false);
         replayLabel.setVisible(false);
         gameOver = false;
+    }
+
+    /*
+     * Reset block back to initial state.
+     */
+    private void resetBlock() {
+        block.velocity.setZero();
+        block.setPosition(BLOCK_STARTING_POSITION.x, BLOCK_STARTING_POSITION.y);
+        block.addMomentum();
+        block.isFalling = false;
+        block.isDead = false;
     }
 
     /*
@@ -106,7 +120,6 @@ final class GameScreen extends AbstractScreen {
         }
     }
 
-    // DONE UP TO HERE
     /*
      * Shifts all wall sections left to the beginning of the world.
      */
@@ -114,10 +127,14 @@ final class GameScreen extends AbstractScreen {
         float x = FIRST_WALL_X_POSITION;
         for (Actor actor : walls.getChildren()) {
             Wall wall = (Wall) actor;
-            wall.setPosition(x, -200 - (RANDOM.nextInt(300)));
-            wall.setPassed(false);
+            wall.setPosition(x, getRandomWallYPosition());
+            wall.isPassed = false;
             x += wall.getWidth() + WALL_SPACING;
         }
+    }
+
+    private int getRandomWallYPosition() {
+        return MAXIMUM_WALL_Y_POSITION - (RANDOM.nextInt(MAXIMUM_WALL_Y_POSITION - MINIMUM_WALL_Y_POSITION));
     }
 
     @Override
@@ -140,29 +157,29 @@ final class GameScreen extends AbstractScreen {
 
     private void addGroundSection() {
         GroundSection groundSection = new GroundSection(assets.groundSectionTexture);
-        setGroundSectionPosition(groundSection);
+        repositionGroundSection(groundSection);
         ground.addActor(groundSection);
     }
 
     /*
-     * Place new ground section after the last ground section (if one exists).
+     * Repositions ground section after the last ground section (if one exists).
      * For example, assume that [1, 2, 3] represents the sections that make up the ground
      * and a new section 4 is added. 4's position will then be set after 3.
      */
-    private void setGroundSectionPosition(GroundSection groundSection) {
-        float x;
-        if (!ground.hasChildren()) {
-            x = 0;
-        } else {
+    private void repositionGroundSection(GroundSection groundSection) {
+        float x = 0;
+        if (ground.hasChildren()) {
             Actor last = ground.getChildren().peek();
             x = last.getX() + last.getWidth();
         }
         groundSection.setPosition(x, 0);
     }
 
+    /*
+     * Get number of walls needed to fill screen and add accordingly.
+     */
     private void addWalls() {
-        // do better calculation
-        int needed = 40;
+        int needed = (int) Math.ceil(camera.viewportWidth / (assets.wallTexture.getWidth() + WALL_SPACING)) + 1;
         while (needed > walls.getChildren().size) {
             addWall();
         }
@@ -170,19 +187,22 @@ final class GameScreen extends AbstractScreen {
 
     private void addWall() {
         Wall wall = new Wall(assets.wallTexture);
-        setWallPosition(wall);
+        repositionWall(wall);
         walls.addActor(wall);
     }
 
-    private void setWallPosition(Wall wall) {
-        float x;
-        if (!walls.hasChildren()) {
-            x = FIRST_WALL_X_POSITION;
-        } else {
+    /*
+     * Repositions wall after the last wall (if one exists). For example, assume
+     * that [1, 2, 3] represents the walls in the game and a new wall 4 is added.
+     * 4's position will then be set after 3.
+     */
+    private void repositionWall(Wall wall) {
+        float x = FIRST_WALL_X_POSITION;
+        if (walls.hasChildren()) {
             Actor last = walls.getChildren().peek();
-            x = last.getX() + last.getWidth() + 250;
+            x = last.getX() + last.getWidth() + WALL_SPACING;
         }
-        wall.setPosition(x, -200 - (RANDOM.nextInt(300)));
+        wall.setPosition(x, getRandomWallYPosition());
     }
 
     @Override
@@ -198,75 +218,39 @@ final class GameScreen extends AbstractScreen {
 
     @Override
     void update(float delta) {
+        updateBlockPosition(delta);
         updateCamera();
-        updateScoreLabel();
-
-        //only do this stuff if not game over
-        handleCollisions();
-
         repositionGround();
+        repositionWalls();
+        handleCollisions();
+        updateLabels();
+    }
 
-        //reposition walls
-
-
-        // leave game over stuff until the end
-        if (gameOver) {
-            scoreLabel.setVisible(false);
-            updateGameOverLabel();
+    private void updateBlockPosition(float delta) {
+        // block is dead so don't need to do anything
+        if (block.isDead) {
+            return;
         }
+
+        // always add gravity
+        block.velocity.y += GRAVITY;
+
+        // calculate new position
+        int x = (int) (block.getX() + (block.velocity.x * delta));
+        int y = (int) (block.getY() + (block.velocity.y * delta));
+
+        // don't let block go through the ceiling
+        int ceiling = (int) (JumpyBlockGame.HEIGHT - block.getHeight());
+        if (y > ceiling) {
+            y = ceiling;
+        }
+
+        block.setPosition(x, y);
     }
 
     private void updateCamera() {
         camera.position.x = (int) block.getX() + (camera.viewportWidth * .5f) - block.getWidth();
         camera.update();
-    }
-
-    private void updateScoreLabel() {
-        scoreLabel.setText(Integer.toString(score));
-        float x = camera.position.x - (scoreLabel.getWidth() / 2);
-        float y = camera.position.y + (camera.viewportHeight / 2) - scoreLabel.getHeight() - SCORE_LABEL_Y_OFFSET;
-        scoreLabel.setPosition(x, y);
-    }
-
-    private void handleCollisions() {
-        handleGroundCollision();
-        handleWallCollision();
-        // if (block.bounds.overlaps(ceiling))
-        //     block.fall();
-    }
-
-    private void handleGroundCollision() {
-        for (Actor actor : ground.getChildren()) {
-            GroundSection groundSection = (GroundSection) actor;
-            if (block.bounds.overlaps(groundSection.bounds)) {
-                block.stop();
-                gameOver = true;
-                if (score > best) {
-                    best = score;
-                    preferences.putInteger("best", best);
-                    preferences.flush();
-                }
-            }
-        }
-    }
-
-    private void handleWallCollision() {
-        for (Actor actor : walls.getChildren()) {
-            Wall wall = (Wall) actor;
-            if (block.bounds.overlaps(wall.topWallBounds) || block.bounds.overlaps(wall.bottomWallBounds)) {
-                block.fall();
-                gameOver = true;
-                if (score > best) {
-                    best = score;
-                    preferences.putInteger("best", best);
-                    preferences.flush();
-                }
-            } else if (block.bounds.overlaps(wall.scoreBounds)) {
-                if (wall.setPassed(true)) {
-                    score++;
-                }
-            }
-        }
     }
 
     /*
@@ -277,31 +261,130 @@ final class GameScreen extends AbstractScreen {
     private void repositionGround() {
         GroundSection first = (GroundSection) (ground.getChildren().first());
         if ((first.getX() + first.getWidth()) < (camera.position.x - (camera.viewportWidth / 2))) {
-            setGroundSectionPosition(first);
+            repositionGroundSection(first);
             ground.removeActor(first);
             ground.addActor(first);
         }
     }
 
-    private void updateGameOverLabel() {
-        gameOverScoreLabel.setText(String.format(GAME_OVER_SCORE_LABEL_TEXT, score));
-        gameOverScoreLabel.pack();
-        gameOverBestLabel.setText(String.format(GAME_OVER_BEST_LABEL_TEXT, best));
-        gameOverBestLabel.pack();
-        updateGameOverLabelPosition();
-        gameOverLabel.setVisible(true);
-        gameOverScoreLabel.setVisible(true);
-        gameOverBestLabel.setVisible(true);
-        replayLabel.setVisible(true);
+    /*
+     * Makes the first wall the last wall if it has disappeared off screen. For example, assume
+     * that [1, 2, 3, 4] represents the walls in the game. When 1 is no longer visible on the
+     * screen it will be moved to the end like so [2, 3, 4, 1].
+     */
+    private void repositionWalls() {
+        Wall first = (Wall) (walls.getChildren().first());
+        if ((first.getX() + first.getWidth()) < (camera.position.x - (camera.viewportWidth / 2))) {
+            repositionWall(first);
+            first.isPassed = false;
+            walls.removeActor(first);
+            walls.addActor(first);
+        }
     }
 
-    private void updateGameOverLabelPosition() {
+    private void handleCollisions() {
+        handleGroundCollision();
+        handleWallCollision();
+    }
+
+    /*
+     * Check if block has collided with a ground section. If so, it is game over.
+     */
+    private void handleGroundCollision() {
+        // block is already dead so we don't need to handle the collision again
+        if (block.isDead) {
+            return;
+        }
+
+        for (Actor actor : ground.getChildren()) {
+            GroundSection groundSection = (GroundSection) actor;
+            if (block.bounds.overlaps(groundSection.bounds)) {
+                block.isDead = true;
+                gameOver();
+            }
+        }
+    }
+
+    private void gameOver() {
+        block.velocity.setZero();
+        gameOver = true;
+        updateBestScore();
+    }
+
+    private void updateBestScore() {
+        if (score > best) {
+            best = score;
+            preferences.putInteger(BEST_PREFERENCES_KEY, best);
+            preferences.flush();
+        }
+    }
+
+    /*
+     * Check if block has collided with a wall. If so, it is game over. A check is
+     * also carried out to see if a point has been scored.
+     */
+    private void handleWallCollision() {
+        // block is already falling so we don't need to handle the collision again
+        if (block.isFalling) {
+            return;
+        }
+
+        for (Actor actor : walls.getChildren()) {
+            Wall wall = (Wall) actor;
+            if (block.bounds.overlaps(wall.topWallBounds) || block.bounds.overlaps(wall.bottomWallBounds)) {
+                block.isFalling = true;
+                gameOver();
+            } else if (block.bounds.overlaps(wall.scoreBounds) && !wall.isPassed) {
+                score++;
+                wall.isPassed = true;
+            }
+        }
+    }
+
+    // DONE UP TO HERE
+    private void updateLabels() {
+        if (gameOver) {
+            scoreLabel.setVisible(false);
+            updateGameOverLabel();
+            updateGameOverScoreLabel();
+            updateGameOverBestLabel();
+            updateReplayLabel();
+        } else {
+            updateScoreLabel();
+        }
+    }
+
+    private void updateGameOverLabel() {
         float x = camera.position.x - (gameOverLabel.getWidth() * .5f);
         float y = (viewport.getWorldHeight() * .666f) - gameOverLabel.getHeight();
         gameOverLabel.setPosition(x, y);
+        gameOverLabel.setVisible(true);
+    }
+
+    private void updateGameOverScoreLabel() {
+        gameOverScoreLabel.setText(String.format(GAME_OVER_SCORE_LABEL_TEXT, score));
+        gameOverScoreLabel.pack();
         gameOverScoreLabel.setPosition(camera.position.x - (gameOverScoreLabel.getWidth() * .5f), gameOverLabel.getY() - gameOverScoreLabel.getHeight() - 30f);
+        gameOverScoreLabel.setVisible(true);
+    }
+
+    private void updateGameOverBestLabel() {
+        gameOverBestLabel.setText(String.format(GAME_OVER_BEST_LABEL_TEXT, best));
+        gameOverBestLabel.pack();
         gameOverBestLabel.setPosition(camera.position.x - (gameOverBestLabel.getWidth() * .5f), gameOverScoreLabel.getY() - gameOverBestLabel.getHeight() - 30f);
+        gameOverBestLabel.setVisible(true);
+    }
+
+    private void updateReplayLabel() {
         replayLabel.setPosition(camera.position.x - (replayLabel.getWidth() * .5f), gameOverBestLabel.getY() - replayLabel.getHeight() - 30f);
+        replayLabel.setVisible(true);
+    }
+
+    private void updateScoreLabel() {
+        scoreLabel.setText(Integer.toString(score));
+        float x = camera.position.x - (scoreLabel.getWidth() / 2);
+        float y = camera.position.y + (camera.viewportHeight / 2) - scoreLabel.getHeight() - SCORE_LABEL_Y_OFFSET;
+        scoreLabel.setPosition(x, y);
     }
 
 }

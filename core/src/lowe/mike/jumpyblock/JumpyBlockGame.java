@@ -23,15 +23,10 @@ public final class JumpyBlockGame extends Game {
 
     @Override
     public void create() {
-        initialiseAssets();
+        assets = new Assets();
         spriteBatch = new SpriteBatch();
         initialiseScreenManager();
         assets.music.play();
-    }
-
-    private void initialiseAssets() {
-        assets = new Assets();
-        assets.load();
     }
 
     private void initialiseScreenManager() {
