@@ -21,7 +21,7 @@ This is a Flappy Bird clone written using libGDX
     gradlew desktop:dist
     ```
     This will create a runnable JAR file located in the `desktop/build/libs/` folder
-4. Go to `desktop/build/libs/` and run `java -jar desktop-1.0.jar`
+4. Go to `desktop/build/libs/` and run `java -jar desktop-1.0.1.jar`
 
 ### Android
 

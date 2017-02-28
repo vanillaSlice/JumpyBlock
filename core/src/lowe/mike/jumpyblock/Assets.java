@@ -99,6 +99,10 @@ public final class Assets {
      */
     public void dispose() {
         assetManager.dispose();
+        // need to do this as the asset manager doesn't handle font disposal
+        for (BitmapFont font : fonts.values()) {
+            font.dispose();
+        }
     }
 
 }
