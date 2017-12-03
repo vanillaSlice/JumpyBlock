@@ -2,7 +2,7 @@
 This is a Flappy Bird clone written using libGDX
 
 ## Screenshot
-![screenshot](./screenshot.jpg)
+![screenshot](./screenshot.png)
 
 ## Running the project
 
