@@ -1,5 +1,6 @@
 package lowe.mike.jumpyblock.screen;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -41,7 +42,10 @@ final class GameScreen extends AbstractScreen {
     private static final int GAME_OVER_BEST_LABEL_FONT_SIZE = 30;
     private static final String GAME_OVER_BEST_LABEL_TEXT = "Best  %d";
     private static final int REPLAY_LABEL_FONT_SIZE = 24;
-    private static final String REPLAY_LABEL_TEXT = "Tap to replay";
+    private static final String REPLAY_LABEL_TEXT =
+            Gdx.app.getType() == Application.ApplicationType.Android ?
+                    "Tap to replay" :
+                    "Click or\npress space\nto replay";
     private static final int LABEL_SPACING = 30;
 
     private final Preferences preferences;
@@ -356,7 +360,8 @@ final class GameScreen extends AbstractScreen {
 
     private void updateGameOverLabel() {
         float x = camera.position.x - (gameOverLabel.getWidth() * .5f);
-        float y = (viewport.getWorldHeight() * .666f) - gameOverLabel.getHeight();
+        float multiplier = Gdx.app.getType() == Application.ApplicationType.Android ? .666f : .75f;
+        float y = (viewport.getWorldHeight() * multiplier) - gameOverLabel.getHeight();
         gameOverLabel.setPosition(x, y);
         gameOverLabel.setVisible(true);
     }

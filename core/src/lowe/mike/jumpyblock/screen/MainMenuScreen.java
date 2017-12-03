@@ -1,5 +1,7 @@
 package lowe.mike.jumpyblock.screen;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,7 +18,10 @@ public final class MainMenuScreen extends AbstractScreen {
     private static final int TITLE_LABEL_FONT_SIZE = 56;
     private static final String TITLE_LABEL_TEXT = "Jumpy\nBlock";
     private static final int MESSAGE_LABEL_FONT_SIZE = 28;
-    private static final String MESSAGE_LABEL_TEXT = "Tap to play";
+    private static final String MESSAGE_LABEL_TEXT =
+            Gdx.app.getType() == Application.ApplicationType.Android ?
+                    "Tap to play" :
+                    "Click or\npress space\nto play";
     private static final int SPACING = 50;
 
     private final Label titleLabel;

@@ -35,6 +35,7 @@ public final class Assets {
     private static final float MUSIC_VOLUME = .2f;
     private static final FreeTypeFontGenerator.FreeTypeFontParameter FONT_PARAMETER
             = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    private static final float FONT_LINE_HEIGHT = 55f;
 
     static {
         FONT_PARAMETER.color = Color.BLACK;
@@ -91,6 +92,7 @@ public final class Assets {
         FONT_PARAMETER.size = size;
         BitmapFont font = fontGenerator.generateFont(FONT_PARAMETER);
         fonts.put(size, font);
+        font.getData().setLineHeight(FONT_LINE_HEIGHT);
         return font;
     }
 
