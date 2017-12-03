@@ -47,6 +47,7 @@ final class GameScreen extends AbstractScreen {
                     "Tap to replay" :
                     "Click or\npress space\nto replay";
     private static final int LABEL_SPACING = 30;
+    private static final float NEW_GAME_DELAY = .5f;
 
     private final Preferences preferences;
     private int best;
@@ -60,6 +61,7 @@ final class GameScreen extends AbstractScreen {
     private final Label gameOverBestLabel;
     private final Label replayLabel;
     private boolean gameOver;
+    private float timeSinceDeath;
 
     /**
      * Creates a new {@code GameScreen} given a {@link ScreenManager}, {@link Assets}
@@ -101,6 +103,7 @@ final class GameScreen extends AbstractScreen {
         gameOverBestLabel.setVisible(false);
         replayLabel.setVisible(false);
         gameOver = false;
+        timeSinceDeath = 0;
     }
 
     /*
@@ -213,10 +216,10 @@ final class GameScreen extends AbstractScreen {
     @Override
     void handleUserInput() {
         if (isJustTouched() || isSpaceJustPressed()) {
-            if (gameOver) {
-                startNewGame();
-            } else {
+            if (!gameOver) {
                 block.jump();
+            } else if (timeSinceDeath >= NEW_GAME_DELAY) {
+                startNewGame();
             }
         }
     }
@@ -229,6 +232,7 @@ final class GameScreen extends AbstractScreen {
         repositionWalls();
         handleCollisions();
         updateLabels();
+        updateTimeSinceDeath(delta);
     }
 
     private void updateBlockPosition(float delta) {
@@ -396,6 +400,12 @@ final class GameScreen extends AbstractScreen {
         float x = camera.position.x - (scoreLabel.getWidth() / 2);
         float y = camera.position.y + (camera.viewportHeight / 2) - scoreLabel.getHeight() - SCORE_LABEL_Y_OFFSET;
         scoreLabel.setPosition(x, y);
+    }
+
+    private void updateTimeSinceDeath(float delta) {
+        if (gameOver) {
+            timeSinceDeath += delta;
+        }
     }
 
 }
