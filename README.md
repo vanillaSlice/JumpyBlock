@@ -1,4 +1,4 @@
-# JumpyBlock
+# Jumpy Block
 This is a Flappy Bird clone written using libGDX
 
 ## Screenshot
