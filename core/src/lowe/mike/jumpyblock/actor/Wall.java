@@ -13,66 +13,64 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
  */
 public final class Wall extends Group {
 
-    private static final int SPACING = 150;
+  private static final int SPACING = 150;
 
-    public final Rectangle topWallBounds = new Rectangle();
-    public final Rectangle bottomWallBounds = new Rectangle();
-    public final Rectangle scoreBounds = new Rectangle();
-    public boolean isPassed;
+  public final Rectangle topWallBounds = new Rectangle();
+  public final Rectangle bottomWallBounds = new Rectangle();
+  public final Rectangle scoreBounds = new Rectangle();
+  public boolean isPassed;
 
-    private final Texture texture;
-    private final Actor topWall;
-    private final Actor bottomWall;
+  private final Actor topWall;
+  private final Actor bottomWall;
 
-    /**
-     * Creates a new {@code Wall} instance given a {@link Texture}.
-     *
-     * @param texture the {@link Texture} of the {@code Wall}
-     */
-    public Wall(Texture texture) {
-        this.texture = texture;
-        this.topWall = new Image(this.texture);
-        this.topWallBounds.setSize(this.topWall.getWidth(), this.topWall.getHeight());
-        this.bottomWall = new Image(this.texture);
-        this.bottomWallBounds.setSize(this.bottomWall.getWidth(), this.bottomWall.getHeight());
-        this.scoreBounds.setHeight(SPACING);
-        addActor(this.topWall);
-        addActor(this.bottomWall);
-        setWidth(this.texture.getWidth());
-        setHeight(this.texture.getHeight() * 2 + SPACING);
-    }
+  /**
+   * Creates a new {@code Wall} instance given a {@link Texture}.
+   *
+   * @param texture the {@link Texture} of the {@code Wall}
+   */
+  public Wall(Texture texture) {
+    this.topWall = new Image(texture);
+    this.topWallBounds.setSize(this.topWall.getWidth(), this.topWall.getHeight());
+    this.bottomWall = new Image(texture);
+    this.bottomWallBounds.setSize(this.bottomWall.getWidth(), this.bottomWall.getHeight());
+    this.scoreBounds.setHeight(SPACING);
+    addActor(this.topWall);
+    addActor(this.bottomWall);
+    setWidth(texture.getWidth());
+    setHeight(texture.getHeight() * 2 + SPACING);
+  }
 
-    @Override
-    public void setPosition(float x, float y) {
-        super.setPosition(x, y);
-        updateTopWallPosition();
-        updateTopWallBounds();
-        updateBottomWallBounds();
-        updateScoreBounds();
-    }
+  @Override
+  public void setPosition(float x, float y) {
+    super.setPosition(x, y);
+    updateTopWallPosition();
+    updateTopWallBounds();
+    updateBottomWallBounds();
+    updateScoreBounds();
+  }
 
-    private void updateTopWallPosition() {
-        float x = bottomWall.getX();
-        float y = bottomWall.getY() + bottomWall.getHeight() + SPACING;
-        topWall.setPosition(x, y);
-    }
+  private void updateTopWallPosition() {
+    float x = bottomWall.getX();
+    float y = bottomWall.getY() + bottomWall.getHeight() + SPACING;
+    topWall.setPosition(x, y);
+  }
 
-    private void updateTopWallBounds() {
-        float x = getX();
-        float y = getY() + bottomWall.getHeight() + SPACING;
-        topWallBounds.setPosition(x, y);
-    }
+  private void updateTopWallBounds() {
+    float x = getX();
+    float y = getY() + bottomWall.getHeight() + SPACING;
+    topWallBounds.setPosition(x, y);
+  }
 
-    private void updateBottomWallBounds() {
-        float x = getX();
-        float y = getY();
-        bottomWallBounds.setPosition(x, y);
-    }
+  private void updateBottomWallBounds() {
+    float x = getX();
+    float y = getY();
+    bottomWallBounds.setPosition(x, y);
+  }
 
-    private void updateScoreBounds() {
-        float x = getX() + bottomWall.getWidth();
-        float y = getY() + bottomWall.getHeight();
-        scoreBounds.setPosition(x, y);
-    }
+  private void updateScoreBounds() {
+    float x = getX() + bottomWall.getWidth();
+    float y = getY() + bottomWall.getHeight();
+    scoreBounds.setPosition(x, y);
+  }
 
 }
