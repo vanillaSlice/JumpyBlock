@@ -11,9 +11,5 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-install:
-  - ./gradlew desktop:assemble
-  - ./gradlew android:assemble
-script:
-  - ./gradlew desktop:check
-  - ./gradlew android:check
+install: ./gradlew desktop:assemble
+script: ./gradlew desktop:check
