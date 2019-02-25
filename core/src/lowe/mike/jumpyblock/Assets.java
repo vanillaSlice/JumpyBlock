@@ -56,8 +56,8 @@ public final class Assets {
    */
   public Assets() {
     // use asset manager to load in assets
-    FreeTypeFontGeneratorLoader loader = new FreeTypeFontGeneratorLoader(
-        new InternalFileHandleResolver());
+    FreeTypeFontGeneratorLoader loader =
+        new FreeTypeFontGeneratorLoader(new InternalFileHandleResolver());
     this.assetManager.setLoader(FreeTypeFontGenerator.class, loader);
     this.assetManager.load(MUSIC_ASSET_DESCRIPTOR);
     this.assetManager.load(FONT_GENERATOR_ASSET_DESCRIPTOR);

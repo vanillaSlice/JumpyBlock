@@ -141,8 +141,8 @@ final class GameScreen extends AbstractScreen {
   }
 
   private int getRandomWallYPosition() {
-    return MAXIMUM_WALL_Y_POSITION - (RANDOM
-        .nextInt(MAXIMUM_WALL_Y_POSITION - MINIMUM_WALL_Y_POSITION));
+    return MAXIMUM_WALL_Y_POSITION -
+        (RANDOM.nextInt(MAXIMUM_WALL_Y_POSITION - MINIMUM_WALL_Y_POSITION));
   }
 
   @Override
