@@ -9,20 +9,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
-
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {@code Assets} provides access to assets, such as {@link Texture}s,
- * used in the <i>Jumpy Block</i> game.
+ * {@code Assets} provides access to assets, such as {@link Texture}s, used in the <i>Jumpy
+ * Block</i> game.
  *
  * @author Mike Lowe
  */
 public final class Assets {
 
-  private static final AssetDescriptor<Music> MUSIC_ASSET_DESCRIPTOR
-      = new AssetDescriptor<Music>("music.mp3", Music.class);
+  private static final AssetDescriptor<Music> MUSIC_ASSET_DESCRIPTOR =
+      new AssetDescriptor<Music>("music.mp3", Music.class);
   private static final AssetDescriptor<FreeTypeFontGenerator> FONT_GENERATOR_ASSET_DESCRIPTOR
       = new AssetDescriptor<FreeTypeFontGenerator>("font.ttf", FreeTypeFontGenerator.class);
   private static final AssetDescriptor<Texture> BLOCK_TEXTURE_ASSET_DESCRIPTOR
@@ -53,12 +52,12 @@ public final class Assets {
   private final Map<Integer, BitmapFont> fonts = new HashMap<Integer, BitmapFont>();
 
   /**
-   * Creates a new {@code Assets} instance and loads the assets
-   * used throughout the game.
+   * Creates a new {@code Assets} instance and loads the assets used throughout the game.
    */
   public Assets() {
     // use asset manager to load in assets
-    FreeTypeFontGeneratorLoader loader = new FreeTypeFontGeneratorLoader(new InternalFileHandleResolver());
+    FreeTypeFontGeneratorLoader loader = new FreeTypeFontGeneratorLoader(
+        new InternalFileHandleResolver());
     this.assetManager.setLoader(FreeTypeFontGenerator.class, loader);
     this.assetManager.load(MUSIC_ASSET_DESCRIPTOR);
     this.assetManager.load(FONT_GENERATOR_ASSET_DESCRIPTOR);
@@ -105,5 +104,4 @@ public final class Assets {
       font.dispose();
     }
   }
-
 }

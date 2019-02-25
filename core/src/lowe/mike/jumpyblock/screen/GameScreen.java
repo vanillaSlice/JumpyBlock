@@ -9,10 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-
 import java.util.Locale;
 import java.util.Random;
-
 import lowe.mike.jumpyblock.Assets;
 import lowe.mike.jumpyblock.JumpyBlockGame;
 import lowe.mike.jumpyblock.actor.Block;
@@ -65,12 +63,12 @@ final class GameScreen extends AbstractScreen {
   private float timeSinceDeath;
 
   /**
-   * Creates a new {@code GameScreen} given a {@link ScreenManager}, {@link Assets}
-   * and a {@link SpriteBatch}.
+   * Creates a new {@code GameScreen} given a {@link ScreenManager}, {@link Assets} and a {@link
+   * SpriteBatch}.
    *
    * @param screenManager the {@link ScreenManager} used to manage game {@link Screen}s
-   * @param assets        {@link Assets} containing assets used in the {@link Screen}
-   * @param spriteBatch   {@link SpriteBatch} to add sprites to
+   * @param assets {@link Assets} containing assets used in the {@link Screen}
+   * @param spriteBatch {@link SpriteBatch} to add sprites to
    */
   public GameScreen(ScreenManager screenManager, Assets assets, SpriteBatch spriteBatch) {
     super(screenManager, assets, spriteBatch);
@@ -143,7 +141,8 @@ final class GameScreen extends AbstractScreen {
   }
 
   private int getRandomWallYPosition() {
-    return MAXIMUM_WALL_Y_POSITION - (RANDOM.nextInt(MAXIMUM_WALL_Y_POSITION - MINIMUM_WALL_Y_POSITION));
+    return MAXIMUM_WALL_Y_POSITION - (RANDOM
+        .nextInt(MAXIMUM_WALL_Y_POSITION - MINIMUM_WALL_Y_POSITION));
   }
 
   @Override
@@ -188,7 +187,8 @@ final class GameScreen extends AbstractScreen {
    * Get number of walls needed to fill screen and add accordingly.
    */
   private void addWalls() {
-    int needed = (int) Math.ceil(camera.viewportWidth / (assets.wallTexture.getWidth() + WALL_SPACING)) + 1;
+    int needed =
+        (int) Math.ceil(camera.viewportWidth / (assets.wallTexture.getWidth() + WALL_SPACING)) + 1;
     while (needed > walls.getChildren().size) {
       addWall();
     }
@@ -341,7 +341,8 @@ final class GameScreen extends AbstractScreen {
 
     for (Actor actor : walls.getChildren()) {
       Wall wall = (Wall) actor;
-      if (block.bounds.overlaps(wall.topWallBounds) || block.bounds.overlaps(wall.bottomWallBounds)) {
+      if (block.bounds.overlaps(wall.topWallBounds) || block.bounds
+          .overlaps(wall.bottomWallBounds)) {
         block.isFalling = true;
         gameOver();
       } else if (block.bounds.overlaps(wall.scoreBounds) && !wall.isPassed) {
@@ -399,7 +400,8 @@ final class GameScreen extends AbstractScreen {
   private void updateScoreLabel() {
     scoreLabel.setText(Integer.toString(score));
     float x = camera.position.x - (scoreLabel.getWidth() / 2);
-    float y = camera.position.y + (camera.viewportHeight / 2) - scoreLabel.getHeight() - SCORE_LABEL_Y_OFFSET;
+    float y = camera.position.y + (camera.viewportHeight / 2) - scoreLabel.getHeight()
+        - SCORE_LABEL_Y_OFFSET;
     scoreLabel.setPosition(x, y);
   }
 
@@ -408,5 +410,4 @@ final class GameScreen extends AbstractScreen {
       timeSinceDeath += delta;
     }
   }
-
 }

@@ -5,8 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
- * {@code GroundSection} instances are drawn across the ground of the
- * world.
+ * {@code GroundSection} instances are drawn across the ground of the world.
  *
  * @author Mike Lowe
  */
@@ -29,5 +28,4 @@ public final class GroundSection extends Image {
     super.setPosition(x, y);
     bounds.setPosition(x, y);
   }
-
 }

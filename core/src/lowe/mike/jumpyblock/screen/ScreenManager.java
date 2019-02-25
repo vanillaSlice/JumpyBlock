@@ -1,12 +1,11 @@
 package lowe.mike.jumpyblock.screen;
 
 import com.badlogic.gdx.Screen;
-
 import lowe.mike.jumpyblock.JumpyBlockGame;
 
 /**
- * {@code ScreenManager} is used to manage the current {@link Screen}
- * in the <i>Jumpy Block</i> game.
+ * {@code ScreenManager} is used to manage the current {@link Screen} in the <i>Jumpy Block</i>
+ * game.
  *
  * @author Mike Lowe
  */
@@ -16,8 +15,8 @@ public final class ScreenManager {
   private Screen currentScreen;
 
   /**
-   * Creates a new {@code ScreenManager} instance given the
-   * {@link JumpyBlockGame} to manage the {@link Screen} for.
+   * Creates a new {@code ScreenManager} instance given the {@link JumpyBlockGame} to manage the
+   * {@link Screen} for.
    *
    * @param game reference to the {@link JumpyBlockGame}
    */
@@ -26,8 +25,7 @@ public final class ScreenManager {
   }
 
   /**
-   * Sets the current {@link Screen}, disposing an existing
-   * {@link Screen} if it exists.
+   * Sets the current {@link Screen}, disposing an existing {@link Screen} if it exists.
    *
    * @param screen the {@link Screen} to display
    */
@@ -45,5 +43,4 @@ public final class ScreenManager {
       currentScreen.dispose();
     }
   }
-
 }

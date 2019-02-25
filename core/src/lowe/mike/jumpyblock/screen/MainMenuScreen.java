@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-
 import lowe.mike.jumpyblock.Assets;
 
 /**
@@ -28,12 +27,12 @@ public final class MainMenuScreen extends AbstractScreen {
   private final Label messageLabel;
 
   /**
-   * Creates a new {@code MainMenuScreen} given a {@link ScreenManager}, {@link Assets}
-   * and a {@link SpriteBatch}.
+   * Creates a new {@code MainMenuScreen} given a {@link ScreenManager}, {@link Assets} and a {@link
+   * SpriteBatch}.
    *
    * @param screenManager the {@link ScreenManager} used to manage game {@link Screen}s
-   * @param assets        {@link Assets} containing assets used in the {@link Screen}
-   * @param spriteBatch   {@link SpriteBatch} to add sprites to
+   * @param assets {@link Assets} containing assets used in the {@link Screen}
+   * @param spriteBatch {@link SpriteBatch} to add sprites to
    */
   public MainMenuScreen(ScreenManager screenManager, Assets assets, SpriteBatch spriteBatch) {
     super(screenManager, assets, spriteBatch);
@@ -78,5 +77,4 @@ public final class MainMenuScreen extends AbstractScreen {
     float y = titleLabel.getY() - messageLabel.getHeight() - SPACING;
     messageLabel.setPosition(x, y);
   }
-
 }

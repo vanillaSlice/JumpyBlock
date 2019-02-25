@@ -2,7 +2,6 @@ package lowe.mike.jumpyblock;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import lowe.mike.jumpyblock.screen.MainMenuScreen;
 import lowe.mike.jumpyblock.screen.ScreenManager;
 
@@ -53,5 +52,4 @@ public final class JumpyBlockGame extends Game {
     spriteBatch.dispose();
     screenManager.dispose();
   }
-
 }

@@ -72,5 +72,4 @@ public final class Wall extends Group {
     float y = getY() + bottomWall.getHeight();
     scoreBounds.setPosition(x, y);
   }
-
 }

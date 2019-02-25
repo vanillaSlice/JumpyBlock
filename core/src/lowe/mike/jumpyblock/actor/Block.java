@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
- * {@code Block} instances are the characters to be controlled
- * by the player.
+ * {@code Block} instances are the characters to be controlled by the player.
  *
  * @author Mike Lowe
  */
@@ -50,5 +49,4 @@ public final class Block extends Image {
   public void jump() {
     velocity.y = JUMP;
   }
-
 }

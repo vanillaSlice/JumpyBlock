@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import lowe.mike.jumpyblock.Assets;
 import lowe.mike.jumpyblock.JumpyBlockGame;
 
@@ -26,26 +25,33 @@ abstract class AbstractScreen extends ScreenAdapter {
   final ScreenManager screenManager;
   final Assets assets;
   final SpriteBatch spriteBatch;
-  final OrthographicCamera camera = new OrthographicCamera(JumpyBlockGame.WIDTH, JumpyBlockGame.HEIGHT);
+  final OrthographicCamera camera =
+      new OrthographicCamera(JumpyBlockGame.WIDTH, JumpyBlockGame.HEIGHT);
   final Viewport viewport;
   final Stage stage;
 
   private boolean isPaused;
 
   /**
-   * Creates a new {@code AbstractScreen} given a {@link ScreenManager}, {@link Assets}
-   * and a {@link SpriteBatch}.
+   * Creates a new {@code AbstractScreen} given a {@link ScreenManager}, {@link Assets} and a {@link
+   * SpriteBatch}.
    *
    * @param screenManager the {@link ScreenManager} used to manage game {@link Screen}s
-   * @param assets        {@link Assets} containing assets used in the {@link Screen}
-   * @param spriteBatch   {@link SpriteBatch} to add sprites to
+   * @param assets {@link Assets} containing assets used in the {@link Screen}
+   * @param spriteBatch {@link SpriteBatch} to add sprites to
    */
   AbstractScreen(ScreenManager screenManager, Assets assets, SpriteBatch spriteBatch) {
     this.screenManager = screenManager;
     this.assets = assets;
     this.spriteBatch = spriteBatch;
     this.camera.setToOrtho(false);
-    this.viewport = new ExtendViewport(JumpyBlockGame.WIDTH, JumpyBlockGame.HEIGHT, 0, JumpyBlockGame.HEIGHT, this.camera);
+    this.viewport = new ExtendViewport(
+        JumpyBlockGame.WIDTH,
+        JumpyBlockGame.HEIGHT,
+        0,
+        JumpyBlockGame.HEIGHT,
+        this.camera
+    );
     this.stage = new Stage(this.viewport, this.spriteBatch);
     Gdx.input.setInputProcessor(this.stage);
   }
@@ -64,7 +70,7 @@ abstract class AbstractScreen extends ScreenAdapter {
    * Creates a {@link Label} with the given font size and text.
    *
    * @param fontSize size of {@link Label} font
-   * @param text     text to initialise {@link Label} with
+   * @param text text to initialise {@link Label} with
    * @return the {@link Label}
    */
   final Label initialiseLabel(int fontSize, String text) {
@@ -138,5 +144,4 @@ abstract class AbstractScreen extends ScreenAdapter {
   public final void dispose() {
     stage.dispose();
   }
-
 }
