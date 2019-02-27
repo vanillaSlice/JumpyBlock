@@ -18,9 +18,9 @@ A Flappy Bird clone built using [libGDX](https://libgdx.badlogicgames.com/).
 * [Java 6+](https://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html)
 * [Gradle](https://gradle.org) (optional)
 
-## Running
+### Running
 
-### Desktop
+#### Desktop
 
 From your terminal/command prompt run:
 
@@ -30,7 +30,7 @@ From your terminal/command prompt run:
 
 This compiles the core and desktop project, and runs the desktop starter.
 
-### Android
+#### Android
 
 From your terminal/command prompt run:
 
