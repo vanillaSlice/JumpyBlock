@@ -1,7 +1,7 @@
 # Jumpy Block
 
 [![Latest Release](https://img.shields.io/github/release/vanillaSlice/JumpyBlock.svg)](https://github.com/vanillaSlice/JumpyBlock/releases/latest)
-[![Build Status](https://img.shields.io/travis/vanillaSlice/JumpyBlock/master.svg)](https://travis-ci.org/vanillaSlice/JumpyBlock)
+[![Build Status](https://img.shields.io/travis/com/vanillaSlice/JumpyBlock/master.svg)](https://travis-ci.com/vanillaSlice/JumpyBlock)
 [![License](https://img.shields.io/github/license/vanillaSlice/JumpyBlock.svg)](LICENSE)
 
 
